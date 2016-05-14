@@ -20,6 +20,14 @@ public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
 	// average number of entries per map before we rehash
 	protected static final double FACTOR = 1.0;
 
+
+	/*
+	* See solutions/the next lesson to see how to make put() constant time and not linear time
+	* Currently, put is in linear time because the implementation of size() iterates through
+	* all of the submaps
+	*/
+
+
 	@Override
 	public V put(K key, V value) {
 		V oldValue = super.put(key, value);
@@ -40,8 +48,16 @@ public class MyHashMap<K, V> extends MyBetterMap<K, V> implements Map<K, V> {
 	 * 
 	 */
 	protected void rehash() {
-        // TODO: fill this in.
-        throw new UnsupportedOperationException();
+		//save old map values in list
+		List<MyLinearMap<K, V>> prevMaps = maps;
+		makeMaps(maps.size() * 2);
+		
+		//have to unpack both because Map -> Entry -> Values
+		for(MyLinearMap<K,V> map: prevMaps) {
+			for(Map.Entry<K,V> entry: map.getEntries()){
+				put(entry.getKey(), entry.getValue());
+			}
+		}
 	}
 
 	/**
